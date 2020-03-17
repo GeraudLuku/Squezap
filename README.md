@@ -1,6 +1,6 @@
 # Squezap [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-<img src="/screenshots/app_icon.png" height="200px"/> <br>
+<img src="/quiz-app-logo.png" height="200px"/> <br>
 
 Squezap is a minimalist quiz application where users can chose across 18 categories and also customise the number of questions and difficulty. A fun application to use when trying to pass time, test your knowledge or just trying to learn something new
 

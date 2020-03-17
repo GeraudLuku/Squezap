@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:106267103051:android:254a5321a9c3a9b4aaa2ce",
         "android_client_info": {
-          "package_name": "com.tvacstudio.quizzapp"
+          "package_name": "com.geraud.quizzapp"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "106267103051-c2p51njcdls3ovu2f4970s2b9o10824o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.tvacstudio.quizzapp",
+            "package_name": "com.geraud.quizzapp",
             "certificate_hash": "3a0b70a2889d0be31e2c48e7a7cff840b0be5ce7"
           }
         },

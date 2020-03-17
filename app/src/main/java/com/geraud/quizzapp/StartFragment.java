@@ -8,6 +8,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,11 +20,19 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.geraud.quizzapp.Model.TriviaResponseObject;
+import com.geraud.quizzapp.Repository.RetrofitClientInstance;
+import com.geraud.quizzapp.Repository.TriviaApi;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -67,7 +79,7 @@ public class StartFragment extends Fragment {
         super.onStart();
 
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if(currentUser == null){
+        if (currentUser == null) {
 
             startFeedbackText.setText("Creating Account...");
 
@@ -75,7 +87,7 @@ public class StartFragment extends Fragment {
             firebaseAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         startFeedbackText.setText("Account Created...");
                         navController.navigate(R.id.action_startFragment_to_listFragment);
                     } else {

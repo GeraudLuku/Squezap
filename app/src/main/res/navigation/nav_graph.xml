@@ -45,7 +45,7 @@
             app:popExitAnim="@anim/slide_down" />
         <argument
             android:name="QuizListModel"
-            app:argType="com.tvacstudio.quizzapp.QuizListModel" />
+            app:argType="com.geraud.quizzapp.QuizListModel" />
     </fragment>
     <fragment
         android:id="@+id/quizFragment"
@@ -57,7 +57,7 @@
             app:destination="@id/resultFragment" />
         <argument
             android:name="FinalQuizListModel"
-            app:argType="com.tvacstudio.quizzapp.QuizListModel" />
+            app:argType="com.geraud.quizzapp.QuizListModel" />
     </fragment>
     <fragment
         android:id="@+id/resultFragment"

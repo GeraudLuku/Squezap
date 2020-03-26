@@ -8,6 +8,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -98,47 +102,68 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         //get questions from Trivia API
         //get retrofit questions
         if (quizListModel != null) {
+            //testing RxJava here
             TriviaApi triviaApi = RetrofitClientInstance.getRetrofitInstance().create(TriviaApi.class);
-            Call<TriviaResponseObject> call = triviaApi.getQuestions(quizListModel.getQuestions(), quizListModel.getCategory(), quizListModel.getLevel(), quizListModel.getType());
-            call.enqueue(new Callback<TriviaResponseObject>() {
-                @Override
-                public void onResponse(Call<TriviaResponseObject> call, Response<TriviaResponseObject> response) {
-                    if (response.isSuccessful()) {
 
-                        Log.d("TAG", "DATA: " + response.body().getResponse_code());
-                        TriviaResponseObject triviaResponseObject = response.body();
+            //fetching questions
+            triviaApi.getQuestions(10, 11, "medium", "multiple")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map(new Function<TriviaResponseObject, ArrayList<QuestionsModel>>() {
+                        @Override
+                        public ArrayList<QuestionsModel> apply(TriviaResponseObject triviaResponseObject) throws Exception {
 
-                        //get convert it to array of our questions object
-                        for (TriviaQuestionObject question : triviaResponseObject.getResults()) {
-                            //for each questions object, map it to the questions object we desire
-                            QuestionsModel questionsModel = new QuestionsModel();
+                            //List of formatted questions
+                            ArrayList<QuestionsModel> finalQuestions = new ArrayList<>();
 
-                            questionsModel.setQuestion(question.getQuestion());
-                            questionsModel.setAnswer(question.getCorrect_answer());
-                            questionsModel.setOption_a(question.getIncorrect_answers()[0]);
-                            questionsModel.setOption_b(question.getIncorrect_answers()[1]);
-                            questionsModel.setOption_c(question.getIncorrect_answers()[2]);
+                            //Get each individual questions object
+                            for (TriviaQuestionObject triviaQuestionObject : triviaResponseObject.getResults()) {
+                                //Transform the questions
+                                QuestionsModel questionsModel = new QuestionsModel();
 
-                            //add it to questions array
-                            questionsModels.add(questionsModel);
-                            //load questions on screen
+                                //random number from 0 to 3
+                                int answerIndex = new Random().nextInt(4);
+
+                                //set question
+                                questionsModel.setQuestion(triviaQuestionObject.getQuestion());
+
+                                //set answer
+                                questionsModel.setAnswer(triviaQuestionObject.getCorrect_answer());
+
+                                //answer choices
+                                ArrayList<String> answerChoices = triviaQuestionObject.getIncorrect_answers();
+                                answerChoices.add(answerIndex, triviaQuestionObject.getCorrect_answer());
+                                //set answer options
+                                questionsModel.setOption_a(answerChoices.get(0));
+                                questionsModel.setOption_b(answerChoices.get(1));
+                                questionsModel.setOption_c(answerChoices.get(2));
+                                questionsModel.setOption_d(answerChoices.get(3));
+
+                                //add question to list of questions
+                                finalQuestions.add(questionsModel);
+
+                            }
+
+                            return finalQuestions;
+
+                        }
+                    })
+                    .subscribeWith(new DisposableSingleObserver<ArrayList<QuestionsModel>>() {
+                        @Override
+                        public void onSuccess(ArrayList<QuestionsModel> questions) {
+                            //recieve all questions
+                            Log.d(TAG, "Success : " + questionsModels.get(0).getQuestion());
+
+                            questionsModels = questions;
                             loadUI();
                         }
 
-                        //get final questions array list
-
-
-                    } else {
-                        Log.d(TAG, "Error Data: " + response.errorBody());
-                        quizTitle.setText("Error Loading Data");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<TriviaResponseObject> call, Throwable t) {
-                    Log.d(TAG, "Error: " + t.getMessage());
-                }
-            });
+                        @Override
+                        public void onError(Throwable e) {
+                            //Network Error
+                            Log.d(TAG, "Network Error : " + e.getMessage());
+                        }
+                    });
         } else {
             Log.d(TAG, "Error: " + "QuizListModel is Empty");
         }
@@ -174,7 +199,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         optionOneBtn.setText(questionsModels.get(questNum).getOption_a());
         optionTwoBtn.setText(questionsModels.get(questNum).getOption_b());
         optionThreeBtn.setText(questionsModels.get(questNum).getOption_c());
-        optionFourBtn.setText(questionsModels.get(questNum).getAnswer());   //answer will always be last
+        optionFourBtn.setText(questionsModels.get(questNum).getOption_d());
 
         //Question Loaded, Set Can Answer
         canAnswer = true;

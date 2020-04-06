@@ -12,9 +12,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -27,12 +24,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.geraud.quizzapp.Model.QuestionsModel;
+import com.geraud.quizzapp.Model.Result;
 import com.geraud.quizzapp.Model.TriviaQuestionObject;
 import com.geraud.quizzapp.Model.TriviaResponseObject;
+import com.geraud.quizzapp.QuizFragmentDirections.ActionQuizFragmentToResultFragment;
 import com.geraud.quizzapp.Repository.RetrofitClientInstance;
 import com.geraud.quizzapp.Repository.TriviaApi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -42,7 +42,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "QUIZ_FRAGMENT_LOG";
 
     private NavController navController;
-    private QuizListModel quizListModel;
+    private QuizListModel quizListModel = null;
 
     //UI Elements
     private TextView quizTitle;
@@ -64,6 +64,10 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
 
     private boolean canAnswer = false;
     private int currentQuestion = 0;
+
+    private int correctAnswers = 0;
+    private int wrongAnswers = 0;
+    private int notAnswered = 0;
 
 
     public QuizFragment() {
@@ -139,6 +143,9 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
                                 questionsModel.setOption_c(answerChoices.get(2));
                                 questionsModel.setOption_d(answerChoices.get(3));
 
+                                //set title category of question
+                                questionsModel.setTitle(triviaQuestionObject.getCategory());
+
                                 //add question to list of questions
                                 finalQuestions.add(questionsModel);
 
@@ -174,11 +181,13 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         optionThreeBtn.setOnClickListener(this);
         optionFourBtn.setOnClickListener(this);
 
+        nextBtn.setOnClickListener(this);
+
     }
 
     private void loadUI() {
         //Quiz Data Loaded, Load the UI
-        quizTitle.setText("Quiz Data Loaded");
+        quizTitle.setText(questionsModels.get(0).getTitle());
         questionText.setText("Load First Question");
 
         //Enable Options
@@ -193,13 +202,13 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         questionNumber.setText(questNum + "");
 
         //Load Question Text
-        questionText.setText(questionsModels.get(questNum).getQuestion());
+        questionText.setText(questionsModels.get(questNum - 1).getQuestion());
 
         //Load Options
-        optionOneBtn.setText(questionsModels.get(questNum).getOption_a());
-        optionTwoBtn.setText(questionsModels.get(questNum).getOption_b());
-        optionThreeBtn.setText(questionsModels.get(questNum).getOption_c());
-        optionFourBtn.setText(questionsModels.get(questNum).getOption_d());
+        optionOneBtn.setText(questionsModels.get(questNum - 1).getOption_a());
+        optionTwoBtn.setText(questionsModels.get(questNum - 1).getOption_b());
+        optionThreeBtn.setText(questionsModels.get(questNum - 1).getOption_c());
+        optionFourBtn.setText(questionsModels.get(questNum - 1).getOption_d());
 
         //Question Loaded, Set Can Answer
         canAnswer = true;
@@ -213,7 +222,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
 
         //Set Timer Text
         int timer = new Random().nextInt(10 + 1) + 10; //get random number from 10-20
-        final Long timeToAnswer = Long.valueOf(timer);
+        final Long timeToAnswer = (long) timer;
         questionTime.setText(timeToAnswer.toString());
 
         //Show Timer ProgressBar
@@ -224,17 +233,22 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onTick(long millisUntilFinished) {
                 //Update Time
-                questionTime.setText(millisUntilFinished / 1000 + "");
+                questionTime.setText(String.format("%d", millisUntilFinished / 1000));
 
                 //Progress in percent
-                Long percent = millisUntilFinished / (timeToAnswer * 10);
-                questionProgress.setProgress(percent.intValue());
+                long percent = millisUntilFinished / (timeToAnswer * 10);
+                questionProgress.setProgress((int) percent);
             }
 
             @Override
             public void onFinish() {
                 //Time Up, Cannot Answer Question Anymore
                 canAnswer = false;
+
+                questionFeedback.setText("Time Up! No answer was submitted.");
+                questionFeedback.setTextColor(getResources().getColor(R.color.colorPrimary, null));
+                notAnswered++;
+                showNextBtn();
             }
         };
 
@@ -264,33 +278,101 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.quiz_option_one:
-                answerSelected(optionOneBtn.getText());
+                verifyAnswer(optionOneBtn);
                 break;
             case R.id.quiz_option_two:
-                answerSelected(optionTwoBtn.getText());
+                verifyAnswer(optionTwoBtn);
                 break;
             case R.id.quiz_option_three:
-                answerSelected(optionThreeBtn.getText());
+                verifyAnswer(optionThreeBtn);
                 break;
             case R.id.quiz_option_four:
-                answerSelected(optionFourBtn.getText());
+                verifyAnswer(optionFourBtn);
+                break;
+            case R.id.quiz_next_btn:
+                if(currentQuestion == 10){
+                    //Load Results
+                    submitResults();
+                } else {
+                    currentQuestion++;
+                    loadQuestion(currentQuestion);
+                    resetOptions();
+                }
                 break;
         }
     }
 
-    private void answerSelected(CharSequence selectedAnswer) {
+    private void submitResults() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        resultMap.put("correct", correctAnswers);
+        resultMap.put("wrong", wrongAnswers);
+        resultMap.put("unanswered", notAnswered);
+
+        Result result = new Result(questionsModels.get(0).getTitle(),correctAnswers,wrongAnswers,notAnswered);
+
+        //navigate to result screen
+        ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(Result.class);
+        action.setResult(result);
+        navController.navigate(action);
+    }
+
+    private void resetOptions() {
+        optionOneBtn.setBackground(getResources().getDrawable(R.drawable.outline_light_btn_bg, null));
+        optionTwoBtn.setBackground(getResources().getDrawable(R.drawable.outline_light_btn_bg, null));
+        optionThreeBtn.setBackground(getResources().getDrawable(R.drawable.outline_light_btn_bg, null));
+
+        optionOneBtn.setTextColor(getResources().getColor(R.color.colorLightText, null));
+        optionTwoBtn.setTextColor(getResources().getColor(R.color.colorLightText, null));
+        optionThreeBtn.setTextColor(getResources().getColor(R.color.colorLightText, null));
+
+        questionFeedback.setVisibility(View.INVISIBLE);
+        nextBtn.setVisibility(View.INVISIBLE);
+        nextBtn.setEnabled(false);
+    }
+
+
+    private void verifyAnswer(Button selectedAnswerBtn) {
         //Check Answer
         if (canAnswer) {
-            if (questionsModels.get(currentQuestion).getAnswer().equals(selectedAnswer)) {
+            //Set Answer Btn Text Color to Black
+            selectedAnswerBtn.setTextColor(getResources().getColor(R.color.colorDark, null));
+            if (questionsModels.get(currentQuestion - 1).getAnswer().equals(selectedAnswerBtn.getText())) {
                 //Correct Answer
                 Log.d(TAG, "Correct Answer");
+                correctAnswers++;
+                selectedAnswerBtn.setBackground(getResources().getDrawable(R.drawable.correct_answer_btn_bg, null));
+                //Set Feedback Text
+                questionFeedback.setText("Correct Answer");
+                questionFeedback.setTextColor(getResources().getColor(R.color.colorPrimary, null));
             } else {
                 //Wrong Answer
                 Log.d(TAG, "Wrong Answer");
+                //Wrong Answer
+                wrongAnswers++;
+                selectedAnswerBtn.setBackground(getResources().getDrawable(R.drawable.wrong_answer_btn_bg, null));
+
+                //Set Feedback Text
+                questionFeedback.setText("Wrong Answer \n \n Correct Answer : " + questionsModels.get(currentQuestion-1).getAnswer());
+                questionFeedback.setTextColor(getResources().getColor(R.color.colorAccent, null));
             }
             //Set Can answer to false
             canAnswer = false;
+
+            //Stop The Timer
+            countDownTimer.cancel();
+
+            //Show Next Button
+            showNextBtn();
         }
+    }
+
+    private void showNextBtn() {
+        if (currentQuestion == 10) {
+            nextBtn.setText("Submit Results");
+        }
+        questionFeedback.setVisibility(View.VISIBLE);
+        nextBtn.setVisibility(View.VISIBLE);
+        nextBtn.setEnabled(true);
     }
 
 }

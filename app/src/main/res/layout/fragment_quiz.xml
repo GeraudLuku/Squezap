@@ -55,6 +55,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/work_sans"
         android:text="0"
+        android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="@+id/quiz_question_number_title"

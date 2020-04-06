@@ -63,5 +63,12 @@
         android:id="@+id/resultFragment"
         android:name="com.geraud.quizzapp.ResultFragment"
         android:label="fragment_result"
-        tools:layout="@layout/fragment_result" />
+        tools:layout="@layout/fragment_result" >
+        <argument
+            android:name="result"
+            app:argType="com.geraud.quizzapp.Model.Result" />
+        <action
+            android:id="@+id/action_resultFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
 </navigation>

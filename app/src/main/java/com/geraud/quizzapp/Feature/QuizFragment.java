@@ -1,4 +1,4 @@
-package com.geraud.quizzapp;
+package com.geraud.quizzapp.Feature;
 
 
 import android.os.Bundle;
@@ -24,16 +24,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.geraud.quizzapp.Model.QuestionsModel;
+import com.geraud.quizzapp.Model.QuizListModel;
 import com.geraud.quizzapp.Model.Result;
 import com.geraud.quizzapp.Model.TriviaQuestionObject;
 import com.geraud.quizzapp.Model.TriviaResponseObject;
+import com.geraud.quizzapp.QuizFragmentArgs;
+import com.geraud.quizzapp.QuizFragmentDirections;
 import com.geraud.quizzapp.QuizFragmentDirections.ActionQuizFragmentToResultFragment;
+import com.geraud.quizzapp.R;
 import com.geraud.quizzapp.Repository.RetrofitClientInstance;
 import com.geraud.quizzapp.Repository.TriviaApi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 

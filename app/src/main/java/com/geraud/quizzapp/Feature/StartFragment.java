@@ -1,4 +1,4 @@
-package com.geraud.quizzapp;
+package com.geraud.quizzapp.Feature;
 
 
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.geraud.quizzapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

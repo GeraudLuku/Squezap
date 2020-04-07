@@ -1,4 +1,4 @@
-package com.geraud.quizzapp;
+package com.geraud.quizzapp.Model;
 
 import java.io.Serializable;
 

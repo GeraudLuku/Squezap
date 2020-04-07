@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context=".DetailsFragment">
+    tools:context=".Feature.DetailsFragment">
 
     <ImageView
         android:id="@+id/details_image"
@@ -90,7 +90,7 @@
     <com.jaredrummler.materialspinner.MaterialSpinner
         android:id="@+id/details_difficulty_text"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/details_difficulty"
         app:layout_constraintEnd_toEndOf="parent"

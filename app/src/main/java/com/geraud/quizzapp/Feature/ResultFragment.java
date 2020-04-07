@@ -1,4 +1,4 @@
-package com.geraud.quizzapp;
+package com.geraud.quizzapp.Feature;
 
 
 import android.os.Bundle;
@@ -17,6 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.geraud.quizzapp.Model.Result;
+import com.geraud.quizzapp.R;
+import com.geraud.quizzapp.ResultFragmentArgs;
 
 
 /**

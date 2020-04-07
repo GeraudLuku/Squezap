@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="com.geraud.quizzapp.StartFragment"
+        android:name="com.geraud.quizzapp.Feature.StartFragment"
         android:label="fragment_start"
         tools:layout="@layout/fragment_start">
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.geraud.quizzapp.ListFragment"
+        android:name="com.geraud.quizzapp.Feature.ListFragment"
         android:label="fragment_list"
         tools:layout="@layout/fragment_list">
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.geraud.quizzapp.DetailsFragment"
+        android:name="com.geraud.quizzapp.Feature.DetailsFragment"
         android:label="fragment_details"
         tools:layout="@layout/fragment_details">
         <action
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/quizFragment"
-        android:name="com.geraud.quizzapp.QuizFragment"
+        android:name="com.geraud.quizzapp.Feature.QuizFragment"
         android:label="fragment_quiz"
         tools:layout="@layout/fragment_quiz">
         <action
@@ -61,7 +61,7 @@
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.geraud.quizzapp.ResultFragment"
+        android:name="com.geraud.quizzapp.Feature.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result" >
         <argument

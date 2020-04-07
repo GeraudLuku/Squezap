@@ -1,6 +1,9 @@
-package com.geraud.quizzapp;
+package com.geraud.quizzapp.ViewModel;
 
 import android.util.Log;
+
+import com.geraud.quizzapp.Model.QuizListModel;
+import com.geraud.quizzapp.Repository.FirebaseRepository;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

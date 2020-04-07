@@ -1,4 +1,4 @@
-package com.geraud.quizzapp;
+package com.geraud.quizzapp.Feature;
 
 
 import android.os.Bundle;
@@ -18,6 +18,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.geraud.quizzapp.DetailsFragmentArgs;
+import com.geraud.quizzapp.DetailsFragmentDirections;
+import com.geraud.quizzapp.Model.QuizListModel;
+import com.geraud.quizzapp.R;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 

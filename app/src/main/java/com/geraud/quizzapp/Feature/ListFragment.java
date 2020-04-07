@@ -1,4 +1,4 @@
-package com.geraud.quizzapp;
+package com.geraud.quizzapp.Feature;
 
 
 import android.os.Bundle;
@@ -19,6 +19,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
+
+import com.geraud.quizzapp.Adapter.QuizListAdapter;
+import com.geraud.quizzapp.ListFragmentDirections;
+import com.geraud.quizzapp.Model.QuizListModel;
+import com.geraud.quizzapp.R;
+import com.geraud.quizzapp.ViewModel.QuizListViewModel;
 
 import java.util.List;
 

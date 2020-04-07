@@ -1,7 +1,8 @@
-package com.geraud.quizzapp;
+package com.geraud.quizzapp.Repository;
 
 import androidx.annotation.NonNull;
 
+import com.geraud.quizzapp.Model.QuizListModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

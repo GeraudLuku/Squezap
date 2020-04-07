@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/details_image"
         android:layout_width="0dp"
-        android:layout_height="192dp"
+        android:layout_height="250dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

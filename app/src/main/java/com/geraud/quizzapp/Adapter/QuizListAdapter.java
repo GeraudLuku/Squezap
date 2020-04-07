@@ -11,19 +11,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.geraud.quizzapp.Model.QuizListModel;
+import com.geraud.quizzapp.Model.Category;
 import com.geraud.quizzapp.R;
 
 import java.util.List;
 
 public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizViewHolder> {
 
-    private List<QuizListModel> quizListModels;
+    private List<Category> categories;
     private OnQuizListItemClicked onQuizListItemClicked;
 
-    public QuizListAdapter(OnQuizListItemClicked onQuizListItemClicked, List<QuizListModel> quizListModels) {
+    public QuizListAdapter(OnQuizListItemClicked onQuizListItemClicked, List<Category> categories) {
         this.onQuizListItemClicked = onQuizListItemClicked;
-        this.quizListModels = quizListModels;
+        this.categories = categories;
     }
 
     @NonNull
@@ -35,57 +35,61 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizVi
 
     @Override
     public void onBindViewHolder(@NonNull QuizViewHolder holder, int position) {
-        holder.listTitle.setText(quizListModels.get(position).getName());
+        //category object
+        Category category = categories.get(position);
 
-        String imageUrl = quizListModels.get(position).getImage();
+        //set title of category
+        holder.Title.setText(category.getName());
 
+        //set category image
         Glide.with(holder.itemView.getContext())
-                .load(imageUrl)
+                .load(category.getImage())
                 .centerCrop()
                 .placeholder(R.drawable.placeholder_image)
-                .into(holder.listImage);
+                .into(holder.Image);
 
-        String listDescription = quizListModels.get(position).getDesc();
+        String listDescription = categories.get(position).getDesc();
         if (listDescription.length() > 150) {
             listDescription = listDescription.substring(0, 150);
         }
 
-        holder.listDesc.setText(listDescription + "...");
+        //set category description
+        holder.Desc.setText(listDescription + "...");
     }
 
     @Override
     public int getItemCount() {
-        if (quizListModels == null) {
+        if (categories == null) {
             return 0;
         } else {
-            return quizListModels.size();
+            return categories.size();
         }
     }
 
     public class QuizViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView listImage;
-        private TextView listTitle;
-        private TextView listDesc;
-        private Button listBtn;
+        private ImageView Image;
+        private TextView Title;
+        private TextView Desc;
+        private Button Btn;
 
         public QuizViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            listImage = itemView.findViewById(R.id.list_image);
-            listTitle = itemView.findViewById(R.id.list_title);
-            listDesc = itemView.findViewById(R.id.list_desc);
-            listBtn = itemView.findViewById(R.id.list_btn);
+            Image = itemView.findViewById(R.id.list_image);
+            Title = itemView.findViewById(R.id.list_title);
+            Desc = itemView.findViewById(R.id.list_desc);
+            Btn = itemView.findViewById(R.id.list_btn);
 
-            listBtn.setOnClickListener(this);
+            Btn.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            onQuizListItemClicked.onItemClicked(quizListModels.get(getAdapterPosition()));
+            onQuizListItemClicked.onItemClicked(categories.get(getAdapterPosition()));
         }
     }
 
     public interface OnQuizListItemClicked {
-        void onItemClicked(QuizListModel quizListModel);
+        void onItemClicked(Category category);
     }
 }

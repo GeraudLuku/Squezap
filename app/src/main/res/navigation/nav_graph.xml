@@ -44,8 +44,8 @@
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_down" />
         <argument
-            android:name="QuizListModel"
-            app:argType="com.geraud.quizzapp.QuizListModel" />
+            android:name="Category"
+            app:argType="com.geraud.quizzapp.Category" />
     </fragment>
     <fragment
         android:id="@+id/quizFragment"
@@ -56,8 +56,8 @@
             android:id="@+id/action_quizFragment_to_resultFragment"
             app:destination="@id/resultFragment" />
         <argument
-            android:name="FinalQuizListModel"
-            app:argType="com.geraud.quizzapp.QuizListModel" />
+            android:name="finalCategory"
+            app:argType="com.geraud.quizzapp.Category" />
     </fragment>
     <fragment
         android:id="@+id/resultFragment"

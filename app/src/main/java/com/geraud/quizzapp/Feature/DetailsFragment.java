@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.geraud.quizzapp.DetailsFragmentArgs;
 import com.geraud.quizzapp.DetailsFragmentDirections;
-import com.geraud.quizzapp.Model.QuizListModel;
+import com.geraud.quizzapp.Model.Category;
 import com.geraud.quizzapp.R;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
@@ -28,7 +28,7 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 public class DetailsFragment extends Fragment implements View.OnClickListener {
 
     private NavController navController;
-    private QuizListModel quizListModel;
+    private Category category;
 
     private ImageView detailsImage;
     private TextView detailsTitle;
@@ -54,8 +54,9 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //instantiate navigation controller and get Category object
         navController = Navigation.findNavController(view);
-        quizListModel = DetailsFragmentArgs.fromBundle(getArguments()).getQuizListModel();
+        category = DetailsFragmentArgs.fromBundle(getArguments()).getQuizListModel();
 
         //Initialize UI Elements
         detailsImage = view.findViewById(R.id.details_image);
@@ -63,36 +64,40 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         detailsDesc = view.findViewById(R.id.details_desc);
 
 
+        //get and set category difficulty default difficulty is Easy
         detailsDiff = view.findViewById(R.id.details_difficulty_text);
         detailsDiff.setItems("Easy", "Medium", "Hard");
         detailsDiff.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                //set difficulty to quizLisModel class
-                quizListModel.setLevel(item.toLowerCase());
+                //set difficulty to Category class
+                category.setLevel(item.toLowerCase());
             }
         });
 
+        //get and set number of questions
         detailsQuestions = view.findViewById(R.id.details_questions_text);
         detailsQuestions.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
             @Override
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
-                //set number of questions to quizListModel class
-                quizListModel.setQuestions(newValue);
+                //set number of questions to category class
+                category.setQuestions(newValue);
             }
         });
 
-        //set information on screen
-        Glide.with(getContext())
-                .load(quizListModel.getImage())
+        //set category image on screen
+        Glide.with(view.getContext())
+                .load(category.getImage())
                 .centerCrop()
                 .placeholder(R.drawable.placeholder_image)
                 .into(detailsImage);
 
-        detailsTitle.setText(quizListModel.getName());
-        detailsDesc.setText(quizListModel.getDesc());
+        //set title and description of category
+        detailsTitle.setText(category.getName());
+        detailsDesc.setText(category.getDesc());
 
+        //start quiz button
         detailsStartBtn = view.findViewById(R.id.details_start_btn);
         detailsStartBtn.setOnClickListener(this);
     }
@@ -103,8 +108,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.details_start_btn:
-                DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment action = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(quizListModel);
-                action.setFinalQuizListModel(quizListModel);
+                DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment action = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(category);
                 navController.navigate(action);
                 break;
         }

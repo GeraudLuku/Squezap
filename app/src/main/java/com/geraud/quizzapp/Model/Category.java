@@ -2,15 +2,15 @@ package com.geraud.quizzapp.Model;
 
 import java.io.Serializable;
 
-public class QuizListModel implements Serializable {
+public class Category implements Serializable {
 
     private String name, desc, image, level, type;
     private int questions, category;
 
-    public QuizListModel() {
+    public Category() {
     }
 
-    public QuizListModel(String name, String desc, String image, String level, String type, int questions, int category) {
+    public Category(String name, String desc, String image, String level, String type, int questions, int category) {
         this.name = name;
         this.desc = desc;
         this.image = image;

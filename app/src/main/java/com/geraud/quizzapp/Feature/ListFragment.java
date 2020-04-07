@@ -22,7 +22,7 @@ import android.widget.ProgressBar;
 
 import com.geraud.quizzapp.Adapter.QuizListAdapter;
 import com.geraud.quizzapp.ListFragmentDirections;
-import com.geraud.quizzapp.Model.QuizListModel;
+import com.geraud.quizzapp.Model.Category;
 import com.geraud.quizzapp.R;
 import com.geraud.quizzapp.ViewModel.QuizListViewModel;
 
@@ -33,11 +33,11 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
 
     private NavController navController;
 
-    private RecyclerView listView;
+    private RecyclerView recyclerView;
     private QuizListViewModel quizListViewModel;
 
     private QuizListAdapter adapter;
-    private List<QuizListModel> quizListModel;
+    private List<Category> categorys;
     private ProgressBar listProgress;
 
     private Animation fadeInAnim;
@@ -60,14 +60,16 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
 
         navController = Navigation.findNavController(view);
 
-        listView = view.findViewById(R.id.list_view);
-        adapter = new QuizListAdapter(this, quizListModel);
+        //instantiate recyclerview and set adapter
+        recyclerView = view.findViewById(R.id.list_view);
+        adapter = new QuizListAdapter(this, categorys);
         listProgress = view.findViewById(R.id.list_progress);
 
-        listView.setLayoutManager(new LinearLayoutManager(getContext()));
-        listView.setHasFixedSize(true);
-        listView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
 
+        //animations
         fadeInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
         fadeOutAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
     }
@@ -79,16 +81,17 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
 
         //here get quiz category list
         quizListViewModel = new ViewModelProvider(getActivity()).get(QuizListViewModel.class);
-        quizListViewModel.getQuizListModelData().observe(getViewLifecycleOwner(), new Observer<List<QuizListModel>>() {
+        quizListViewModel.getQuizListModelData().observe(getViewLifecycleOwner(), new Observer<List<Category>>() {
             @Override
-            public void onChanged(List<QuizListModel> quizListModels) {
+            public void onChanged(List<Category> categories) {
                 //set quizlist category items
-                quizListModel = quizListModels;
+                categorys = categories;
 
-                //Load RecyclerView
-                listView.startAnimation(fadeInAnim);
+                //show RecyclerView when data is available
+                recyclerView.startAnimation(fadeInAnim);
                 listProgress.startAnimation(fadeOutAnim);
 
+                //notifiy adapter that data has been added
                 adapter.notifyDataSetChanged();
             }
         });
@@ -97,9 +100,8 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
 
 
     @Override
-    public void onItemClicked(QuizListModel quizListModel) {
-        ListFragmentDirections.ActionListFragmentToDetailsFragment action = ListFragmentDirections.actionListFragmentToDetailsFragment(quizListModel);
-        action.setQuizListModel(quizListModel);
+    public void onItemClicked(Category category) {
+        ListFragmentDirections.ActionListFragmentToDetailsFragment action = ListFragmentDirections.actionListFragmentToDetailsFragment(category);
         navController.navigate(action);
     }
 }

@@ -1,7 +1,6 @@
 package com.geraud.quizzapp.Model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TriviaQuestionObject {
     private String category, type, difficulty, question, correct_answer;

@@ -2,7 +2,7 @@ package com.geraud.quizzapp.Repository;
 
 import androidx.annotation.NonNull;
 
-import com.geraud.quizzapp.Model.QuizListModel;
+import com.geraud.quizzapp.Model.Category;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,7 +15,7 @@ public class FirebaseRepository {
 
     private OnFirestoreTaskComplete onFirestoreTaskComplete;
 
-    private ArrayList<QuizListModel> quizListModels= new ArrayList<>();
+    private ArrayList<Category> categories = new ArrayList<>();
 
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("QuizCategories");
 
@@ -33,10 +33,10 @@ public class FirebaseRepository {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     //store all values in a single list
-                    quizListModels.add(ds.getValue(QuizListModel.class));
+                    categories.add(ds.getValue(Category.class));
                 }
                 //return all items
-                onFirestoreTaskComplete.quizListDataAdded(quizListModels);
+                onFirestoreTaskComplete.quizListDataAdded(categories);
             }
 
             @Override
@@ -47,7 +47,7 @@ public class FirebaseRepository {
     }
 
     public interface OnFirestoreTaskComplete {
-        void quizListDataAdded(ArrayList<QuizListModel> quizListModelsList);
+        void quizListDataAdded(ArrayList<Category> quizListModelsList);
 
         void onError(String e);
     }

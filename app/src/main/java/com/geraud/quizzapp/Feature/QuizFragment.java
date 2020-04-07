@@ -1,11 +1,15 @@
 package com.geraud.quizzapp.Feature;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -23,8 +27,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.geraud.quizzapp.Model.QuestionsModel;
-import com.geraud.quizzapp.Model.QuizListModel;
+import com.geraud.quizzapp.Model.Category;
+import com.geraud.quizzapp.Model.Question;
 import com.geraud.quizzapp.Model.Result;
 import com.geraud.quizzapp.Model.TriviaQuestionObject;
 import com.geraud.quizzapp.Model.TriviaResponseObject;
@@ -34,6 +38,7 @@ import com.geraud.quizzapp.QuizFragmentDirections.ActionQuizFragmentToResultFrag
 import com.geraud.quizzapp.R;
 import com.geraud.quizzapp.Repository.RetrofitClientInstance;
 import com.geraud.quizzapp.Repository.TriviaApi;
+import com.geraud.quizzapp.ViewModel.QuizListViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +50,9 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "QUIZ_FRAGMENT_LOG";
 
     private NavController navController;
-    private QuizListModel quizListModel = null;
+    private QuizListViewModel quizListViewModel;
+
+    private Category category = null;
 
     //UI Elements
     private TextView quizTitle;
@@ -63,7 +70,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
 
     private CountDownTimer countDownTimer;
 
-    private ArrayList<QuestionsModel> questionsModels = new ArrayList<>();
+    private ArrayList<Question> questions = new ArrayList<>();
 
     private boolean canAnswer = false;
     private int currentQuestion = 0;
@@ -93,6 +100,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         quizTitle = view.findViewById(R.id.quiz_title);
         optionOneBtn = view.findViewById(R.id.quiz_option_one);
         optionTwoBtn = view.findViewById(R.id.quiz_option_two);
+        closeBtn = view.findViewById(R.id.quiz_close_btn);
         optionThreeBtn = view.findViewById(R.id.quiz_option_three);
         optionFourBtn = view.findViewById(R.id.quiz_option_four);
         nextBtn = view.findViewById(R.id.quiz_next_btn);
@@ -104,79 +112,17 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
 
         //get quisListModel object from Details Fragment
         navController = Navigation.findNavController(view);
-        quizListModel = QuizFragmentArgs.fromBundle(getArguments()).getFinalQuizListModel();
+        category = QuizFragmentArgs.fromBundle(getArguments()).getFinalQuizListModel();
 
         //get questions from Trivia API
-        //get retrofit questions
-        if (quizListModel != null) {
-            //testing RxJava here
-            TriviaApi triviaApi = RetrofitClientInstance.getRetrofitInstance().create(TriviaApi.class);
-
-            //fetching questions
-            triviaApi.getQuestions(10, 11, "medium", "multiple")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .map(new Function<TriviaResponseObject, ArrayList<QuestionsModel>>() {
-                        @Override
-                        public ArrayList<QuestionsModel> apply(TriviaResponseObject triviaResponseObject) throws Exception {
-
-                            //List of formatted questions
-                            ArrayList<QuestionsModel> finalQuestions = new ArrayList<>();
-
-                            //Get each individual questions object
-                            for (TriviaQuestionObject triviaQuestionObject : triviaResponseObject.getResults()) {
-                                //Transform the questions
-                                QuestionsModel questionsModel = new QuestionsModel();
-
-                                //random number from 0 to 3
-                                int answerIndex = new Random().nextInt(4);
-
-                                //set question
-                                questionsModel.setQuestion(triviaQuestionObject.getQuestion());
-
-                                //set answer
-                                questionsModel.setAnswer(triviaQuestionObject.getCorrect_answer());
-
-                                //answer choices
-                                ArrayList<String> answerChoices = triviaQuestionObject.getIncorrect_answers();
-                                answerChoices.add(answerIndex, triviaQuestionObject.getCorrect_answer());
-                                //set answer options
-                                questionsModel.setOption_a(answerChoices.get(0));
-                                questionsModel.setOption_b(answerChoices.get(1));
-                                questionsModel.setOption_c(answerChoices.get(2));
-                                questionsModel.setOption_d(answerChoices.get(3));
-
-                                //set title category of question
-                                questionsModel.setTitle(triviaQuestionObject.getCategory());
-
-                                //add question to list of questions
-                                finalQuestions.add(questionsModel);
-
-                            }
-
-                            return finalQuestions;
-
-                        }
-                    })
-                    .subscribeWith(new DisposableSingleObserver<ArrayList<QuestionsModel>>() {
-                        @Override
-                        public void onSuccess(ArrayList<QuestionsModel> questions) {
-                            //recieve all questions
-                            Log.d(TAG, "Success : " + questionsModels.get(0).getQuestion());
-
-                            questionsModels = questions;
-                            loadUI();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            //Network Error
-                            Log.d(TAG, "Network Error : " + e.getMessage());
-                        }
-                    });
-        } else {
-            Log.d(TAG, "Error: " + "QuizListModel is Empty");
-        }
+        quizListViewModel = new ViewModelProvider(getActivity()).get(QuizListViewModel.class);
+        quizListViewModel.getQuestions(category.getQuestions(), category.getCategory(), category.getLevel(), category.getType()).observe(getViewLifecycleOwner(), new Observer<ArrayList<Question>>() {
+            @Override
+            public void onChanged(ArrayList<Question> questionArrayList) {
+                questions = questionArrayList;
+                loadUI();
+            }
+        });
 
         //Set Button Click Listeners
         optionOneBtn.setOnClickListener(this);
@@ -185,12 +131,13 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         optionFourBtn.setOnClickListener(this);
 
         nextBtn.setOnClickListener(this);
+        closeBtn.setOnClickListener(this);
 
     }
 
     private void loadUI() {
         //Quiz Data Loaded, Load the UI
-        quizTitle.setText(questionsModels.get(0).getTitle());
+        quizTitle.setText(questions.get(0).getTitle());
         questionText.setText("Load First Question");
 
         //Enable Options
@@ -205,13 +152,13 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         questionNumber.setText(questNum + "");
 
         //Load Question Text
-        questionText.setText(questionsModels.get(questNum - 1).getQuestion());
+        questionText.setText(questions.get(questNum - 1).getQuestion());
 
         //Load Options
-        optionOneBtn.setText(questionsModels.get(questNum - 1).getOption_a());
-        optionTwoBtn.setText(questionsModels.get(questNum - 1).getOption_b());
-        optionThreeBtn.setText(questionsModels.get(questNum - 1).getOption_c());
-        optionFourBtn.setText(questionsModels.get(questNum - 1).getOption_d());
+        optionOneBtn.setText(questions.get(questNum - 1).getOption_a());
+        optionTwoBtn.setText(questions.get(questNum - 1).getOption_b());
+        optionThreeBtn.setText(questions.get(questNum - 1).getOption_c());
+        optionFourBtn.setText(questions.get(questNum - 1).getOption_d());
 
         //Question Loaded, Set Can Answer
         canAnswer = true;
@@ -224,9 +171,8 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     private void startTimer() {
 
         //Set Timer Text
-        int timer = new Random().nextInt(10 + 1) + 10; //get random number from 10-20
-        final Long timeToAnswer = (long) timer;
-        questionTime.setText(timeToAnswer.toString());
+        long timeToAnswer = questions.get(currentQuestion).getTimer(); //10 seconds
+        questionTime.setText((int) timeToAnswer);
 
         //Show Timer ProgressBar
         questionProgress.setVisibility(View.VISIBLE);
@@ -293,7 +239,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
                 verifyAnswer(optionFourBtn);
                 break;
             case R.id.quiz_next_btn:
-                if(currentQuestion == 10){
+                if (currentQuestion == 10) {
                     //Load Results
                     submitResults();
                 } else {
@@ -302,20 +248,37 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
                     resetOptions();
                 }
                 break;
+            case R.id.quiz_close_btn:
+                //leave fragment and goto results screen
+
+                new AlertDialog.Builder(getContext())
+                        .setMessage("Are you sure you want to leave this quiz?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Continue with leaving operation
+                                //total questions - (correct answered + wrong answered)
+                                Result result = new Result(questions.get(0).getTitle(), correctAnswers, wrongAnswers,
+                                        (category.getQuestions() - (correctAnswers + wrongAnswers)));
+
+                                //navigate to result screen
+                                ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(result);
+                                navController.navigate(action);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                break;
         }
     }
 
     private void submitResults() {
-        HashMap<String, Object> resultMap = new HashMap<>();
-        resultMap.put("correct", correctAnswers);
-        resultMap.put("wrong", wrongAnswers);
-        resultMap.put("unanswered", notAnswered);
-
-        Result result = new Result(questionsModels.get(0).getTitle(),correctAnswers,wrongAnswers,notAnswered);
+        //result object
+        Result result = new Result(questions.get(0).getTitle(), correctAnswers, wrongAnswers, notAnswered);
 
         //navigate to result screen
-        ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(Result.class);
-        action.setResult(result);
+        ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(result);
         navController.navigate(action);
     }
 
@@ -333,13 +296,12 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         nextBtn.setEnabled(false);
     }
 
-
     private void verifyAnswer(Button selectedAnswerBtn) {
         //Check Answer
         if (canAnswer) {
             //Set Answer Btn Text Color to Black
             selectedAnswerBtn.setTextColor(getResources().getColor(R.color.colorDark, null));
-            if (questionsModels.get(currentQuestion - 1).getAnswer().equals(selectedAnswerBtn.getText())) {
+            if (questions.get(currentQuestion - 1).getAnswer().equals(selectedAnswerBtn.getText())) {
                 //Correct Answer
                 Log.d(TAG, "Correct Answer");
                 correctAnswers++;
@@ -355,7 +317,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
                 selectedAnswerBtn.setBackground(getResources().getDrawable(R.drawable.wrong_answer_btn_bg, null));
 
                 //Set Feedback Text
-                questionFeedback.setText("Wrong Answer \n \n Correct Answer : " + questionsModels.get(currentQuestion-1).getAnswer());
+                questionFeedback.setText("Wrong Answer \n \n Correct Answer : " + questions.get(currentQuestion - 1).getAnswer());
                 questionFeedback.setTextColor(getResources().getColor(R.color.colorAccent, null));
             }
             //Set Can answer to false

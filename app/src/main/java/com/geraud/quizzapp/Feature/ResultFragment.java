@@ -15,16 +15,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.geraud.quizzapp.Model.Result;
 import com.geraud.quizzapp.R;
 import com.geraud.quizzapp.ResultFragmentArgs;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ResultFragment extends Fragment {
+public class ResultFragment extends Fragment implements RewardedVideoAdListener {
+
+    private static final String ADMOB_APP_ID = "ca-app-pub-4709428567137080~4107467797";
+
+    private RewardedVideoAd mRewardedVideoAd;
 
     private NavController navController;
 
@@ -47,11 +57,19 @@ public class ResultFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for getContext() fragment
         View view = inflater.inflate(R.layout.fragment_result, container, false);
 
         //show Admob
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getActivity());
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+        mRewardedVideoAd.loadAd(ADMOB_APP_ID, new AdRequest.Builder().build());
 
+        //Display a rewarded video ad
+        if (mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        }
 
         return view;
     }
@@ -93,4 +111,68 @@ public class ResultFragment extends Fragment {
         resultProgress.setProgress((int) percent);
 
     }
+
+    @Override
+    public void onResume() {
+        mRewardedVideoAd.resume(getActivity());
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mRewardedVideoAd.pause(getActivity());
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mRewardedVideoAd.destroy(getActivity());
+        super.onDestroy();
+    }
+
+
+
+    @Override
+    public void onRewarded(RewardItem reward) {
+        Toast.makeText(getContext(), "onRewarded! currency: " + reward.getType() + "  amount: " +
+                reward.getAmount(), Toast.LENGTH_SHORT).show();
+        // Reward the user.
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        Toast.makeText(getContext(), "onRewardedVideoAdLeftApplication",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        Toast.makeText(getContext(), "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int errorCode) {
+        Toast.makeText(getContext(), "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        Toast.makeText(getContext(), "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Toast.makeText(getContext(), "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        Toast.makeText(getContext(), "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+        Toast.makeText(getContext(), "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+    }
+
 }

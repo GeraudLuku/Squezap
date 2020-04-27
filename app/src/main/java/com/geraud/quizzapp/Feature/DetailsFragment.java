@@ -18,8 +18,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
-import com.geraud.quizzapp.DetailsFragmentArgs;
-import com.geraud.quizzapp.DetailsFragmentDirections;
 import com.geraud.quizzapp.Model.Category;
 import com.geraud.quizzapp.R;
 import com.jaredrummler.materialspinner.MaterialSpinner;
@@ -56,7 +54,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
         //instantiate navigation controller and get Category object
         navController = Navigation.findNavController(view);
-        category = DetailsFragmentArgs.fromBundle(getArguments()).getQuizListModel();
+        category = DetailsFragmentArgs.fromBundle(getArguments()).getCategory();
 
         //Initialize UI Elements
         detailsImage = view.findViewById(R.id.details_image);
@@ -108,8 +106,10 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.details_start_btn:
-                DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment action = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(category);
-                navController.navigate(action);
+//                DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment action = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(category);
+//                navController.navigate(action);
+                DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment detailsFragmentToQuizFragment = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(category);
+                navController.navigate(detailsFragmentToQuizFragment);
                 break;
         }
     }

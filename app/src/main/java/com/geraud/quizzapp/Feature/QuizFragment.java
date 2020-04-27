@@ -12,10 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
+
 
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -30,19 +27,11 @@ import android.widget.TextView;
 import com.geraud.quizzapp.Model.Category;
 import com.geraud.quizzapp.Model.Question;
 import com.geraud.quizzapp.Model.Result;
-import com.geraud.quizzapp.Model.TriviaQuestionObject;
-import com.geraud.quizzapp.Model.TriviaResponseObject;
-import com.geraud.quizzapp.QuizFragmentArgs;
-import com.geraud.quizzapp.QuizFragmentDirections;
-import com.geraud.quizzapp.QuizFragmentDirections.ActionQuizFragmentToResultFragment;
 import com.geraud.quizzapp.R;
-import com.geraud.quizzapp.Repository.RetrofitClientInstance;
-import com.geraud.quizzapp.Repository.TriviaApi;
 import com.geraud.quizzapp.ViewModel.QuizListViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+
 
 
 public class QuizFragment extends Fragment implements View.OnClickListener {
@@ -110,9 +99,9 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         questionProgress = view.findViewById(R.id.quiz_question_progress);
         questionNumber = view.findViewById(R.id.quiz_question_number);
 
-        //get quisListModel object from Details Fragment
+        //get quizListModel object from Details Fragment
         navController = Navigation.findNavController(view);
-        category = QuizFragmentArgs.fromBundle(getArguments()).getFinalQuizListModel();
+        category =QuizFragmentArgs.fromBundle(getArguments()).getCategory();
 
         //get questions from Trivia API
         quizListViewModel = new ViewModelProvider(getActivity()).get(QuizListViewModel.class);
@@ -251,7 +240,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
             case R.id.quiz_close_btn:
                 //leave fragment and goto results screen
 
-                new AlertDialog.Builder(getContext())
+                new AlertDialog.Builder(getActivity())
                         .setMessage("Are you sure you want to leave this quiz?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -261,7 +250,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
                                         (category.getQuestions() - (correctAnswers + wrongAnswers)));
 
                                 //navigate to result screen
-                                ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(result);
+                                QuizFragmentDirections.ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(result);
                                 navController.navigate(action);
                             }
                         })
@@ -278,7 +267,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         Result result = new Result(questions.get(0).getTitle(), correctAnswers, wrongAnswers, notAnswered);
 
         //navigate to result screen
-        ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(result);
+        QuizFragmentDirections.ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(result);
         navController.navigate(action);
     }
 

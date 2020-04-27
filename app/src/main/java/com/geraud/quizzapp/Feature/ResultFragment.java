@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.geraud.quizzapp.Model.Result;
 import com.geraud.quizzapp.R;
-import com.geraud.quizzapp.ResultFragmentArgs;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
@@ -27,9 +26,6 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ResultFragment extends Fragment implements RewardedVideoAdListener {
 
     private static final String ADMOB_APP_ID = "ca-app-pub-4709428567137080~4107467797";

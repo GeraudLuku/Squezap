@@ -42,10 +42,13 @@
             app:enterAnim="@anim/slide_up"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_down" />
+            app:popExitAnim="@anim/slide_down"
+            app:popUpTo="@id/detailsFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="Category"
-            app:argType="com.geraud.quizzapp.Category" />
+            app:argType="com.geraud.quizzapp.Model.Category" />
+
     </fragment>
     <fragment
         android:id="@+id/quizFragment"
@@ -54,21 +57,25 @@
         tools:layout="@layout/fragment_quiz">
         <action
             android:id="@+id/action_quizFragment_to_resultFragment"
-            app:destination="@id/resultFragment" />
+            app:destination="@id/resultFragment"
+            app:popUpTo="@id/quizFragment"
+            app:popUpToInclusive="true" />
         <argument
-            android:name="finalCategory"
-            app:argType="com.geraud.quizzapp.Category" />
+            android:name="Category"
+            app:argType="com.geraud.quizzapp.Model.Category" />
+
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.geraud.quizzapp.Feature.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result" >
-        <argument
-            android:name="result"
-            app:argType="com.geraud.quizzapp.Model.Result" />
+
         <action
             android:id="@+id/action_resultFragment_to_listFragment"
             app:destination="@id/listFragment" />
+        <argument
+            android:name="Result"
+            app:argType="com.geraud.quizzapp.Model.Result" />
     </fragment>
 </navigation>

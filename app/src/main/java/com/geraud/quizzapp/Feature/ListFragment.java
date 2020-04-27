@@ -21,7 +21,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 
 import com.geraud.quizzapp.Adapter.QuizListAdapter;
-import com.geraud.quizzapp.ListFragmentDirections;
 import com.geraud.quizzapp.Model.Category;
 import com.geraud.quizzapp.R;
 import com.geraud.quizzapp.ViewModel.QuizListViewModel;
@@ -84,14 +83,14 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
         quizListViewModel.getQuizListModelData().observe(getViewLifecycleOwner(), new Observer<List<Category>>() {
             @Override
             public void onChanged(List<Category> categories) {
-                //set quizlist category items
+                //set quiz list category items
                 categorys = categories;
 
                 //show RecyclerView when data is available
                 recyclerView.startAnimation(fadeInAnim);
                 listProgress.startAnimation(fadeOutAnim);
 
-                //notifiy adapter that data has been added
+                //notify adapter that data has been added
                 adapter.notifyDataSetChanged();
             }
         });
@@ -101,7 +100,7 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
 
     @Override
     public void onItemClicked(Category category) {
-        ListFragmentDirections.ActionListFragmentToDetailsFragment action = ListFragmentDirections.actionListFragmentToDetailsFragment(category);
-        navController.navigate(action);
+        ListFragmentDirections.ActionListFragmentToDetailsFragment listFragmentToDetailsFragment = ListFragmentDirections.actionListFragmentToDetailsFragment(category);
+        navController.navigate(listFragmentToDetailsFragment);
     }
 }

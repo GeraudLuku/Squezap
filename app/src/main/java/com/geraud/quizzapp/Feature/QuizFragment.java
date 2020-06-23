@@ -33,7 +33,6 @@ import com.geraud.quizzapp.ViewModel.QuizListViewModel;
 import java.util.ArrayList;
 
 
-
 public class QuizFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "QUIZ_FRAGMENT_LOG";
@@ -85,7 +84,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //UI Initialize
+        //UI Initialize...
         quizTitle = view.findViewById(R.id.quiz_title);
         optionOneBtn = view.findViewById(R.id.quiz_option_one);
         optionTwoBtn = view.findViewById(R.id.quiz_option_two);
@@ -101,7 +100,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
 
         //get quizListModel object from Details Fragment
         navController = Navigation.findNavController(view);
-        category =QuizFragmentArgs.fromBundle(getArguments()).getCategory();
+        category = QuizFragmentArgs.fromBundle(getArguments()).getCategory();
 
         //get questions from Trivia API
         quizListViewModel = new ViewModelProvider(getActivity()).get(QuizListViewModel.class);

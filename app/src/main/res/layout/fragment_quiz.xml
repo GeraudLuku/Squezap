@@ -180,6 +180,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:fontFamily="@font/work_sans"
         android:text="Verifying Answer"
         android:textAlignment="center"

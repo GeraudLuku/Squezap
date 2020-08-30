@@ -106,6 +106,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         detailsTitle.setText(category.getName());
         detailsDesc.setText(category.getDesc());
 
+        //make the view scrollable
         detailsDesc.setMovementMethod(new ScrollingMovementMethod());
 
         //start quiz button

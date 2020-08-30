@@ -56,16 +56,16 @@ public class ResultFragment extends Fragment implements RewardedVideoAdListener 
         // Inflate the layout for getContext() fragment
         View view = inflater.inflate(R.layout.fragment_result, container, false);
 
-        //show Admob
-        // Use an activity context to get the rewarded video instance.
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getActivity());
-        mRewardedVideoAd.setRewardedVideoAdListener(this);
-        mRewardedVideoAd.loadAd(ADMOB_APP_ID, new AdRequest.Builder().build());
-
-        //Display a rewarded video ad
-        if (mRewardedVideoAd.isLoaded()) {
-            mRewardedVideoAd.show();
-        }
+//        //show Admob
+//        // Use an activity context to get the rewarded video instance.
+//        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getActivity());
+//        mRewardedVideoAd.setRewardedVideoAdListener(this);
+//        mRewardedVideoAd.loadAd(ADMOB_APP_ID, new AdRequest.Builder().build());
+//
+//        //Display a rewarded video ad
+//        if (mRewardedVideoAd.isLoaded()) {
+//            mRewardedVideoAd.show();
+//        }
 
         return view;
     }
@@ -74,7 +74,7 @@ public class ResultFragment extends Fragment implements RewardedVideoAdListener 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //initilized nav controller and get results object
+        //initialized nav controller and get results object
         navController = Navigation.findNavController(view);
         mResult = ResultFragmentArgs.fromBundle(getArguments()).getResult();
 
@@ -95,9 +95,9 @@ public class ResultFragment extends Fragment implements RewardedVideoAdListener 
         resultProgress = view.findViewById(R.id.results_progress);
 
         //show results
-        resultCorrect.setText(mResult.getCorrect());
-        resultWrong.setText(mResult.getWrong());
-        resultMissed.setText(mResult.getUnAnswered());
+        resultCorrect.setText(mResult.getCorrect()+ "");
+        resultWrong.setText(mResult.getWrong()+ "");
+        resultMissed.setText(mResult.getUnAnswered()+ "");
 
         //Calculate Progress
         long total = (long) mResult.getCorrect() + mResult.getWrong() + mResult.getUnAnswered();
@@ -108,23 +108,23 @@ public class ResultFragment extends Fragment implements RewardedVideoAdListener 
 
     }
 
-    @Override
-    public void onResume() {
-        mRewardedVideoAd.resume(getActivity());
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(getActivity());
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mRewardedVideoAd.destroy(getActivity());
-        super.onDestroy();
-    }
+//    @Override
+//    public void onResume() {
+//        mRewardedVideoAd.resume(getActivity());
+//        super.onResume();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        mRewardedVideoAd.pause(getActivity());
+//        super.onPause();
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        mRewardedVideoAd.destroy(getActivity());
+//        super.onDestroy();
+//    }
 
 
 

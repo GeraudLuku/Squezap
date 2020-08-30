@@ -102,11 +102,14 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         navController = Navigation.findNavController(view);
         category = QuizFragmentArgs.fromBundle(getArguments()).getCategory();
 
+        Log.d("Quiz Fragment", String.format("%s %s %s %s",category.getName(),category.getType(),category.getType(),category.getImage()));
+
         //get questions from Trivia API
         quizListViewModel = new ViewModelProvider(getActivity()).get(QuizListViewModel.class);
         quizListViewModel.getQuestions(category.getQuestions(), category.getCategory(), category.getLevel(), category.getType()).observe(getViewLifecycleOwner(), new Observer<ArrayList<Question>>() {
             @Override
             public void onChanged(ArrayList<Question> questionArrayList) {
+                Log.d("Quiz Frag",questionArrayList.get(0).getTitle());
                 questions = questionArrayList;
                 loadUI();
             }
@@ -159,8 +162,8 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     private void startTimer() {
 
         //Set Timer Text
-        long timeToAnswer = questions.get(currentQuestion).getTimer(); //10 seconds
-        questionTime.setText((int) timeToAnswer);
+        long timeToAnswer = questions.get(currentQuestion - 1).getTimer(); //10 seconds
+        questionTime.setText((int) timeToAnswer + "");
 
         //Show Timer ProgressBar
         questionProgress.setVisibility(View.VISIBLE);
@@ -227,7 +230,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
                 verifyAnswer(optionFourBtn);
                 break;
             case R.id.quiz_next_btn:
-                if (currentQuestion == 10) {
+                if (currentQuestion == questions.size()) {
                     //Load Results
                     submitResults();
                 } else {
@@ -292,7 +295,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
             if (questions.get(currentQuestion - 1).getAnswer().equals(selectedAnswerBtn.getText())) {
                 //Correct Answer
                 Log.d(TAG, "Correct Answer");
-                correctAnswers++;
+                correctAnswers += 1;
                 selectedAnswerBtn.setBackground(getResources().getDrawable(R.drawable.correct_answer_btn_bg, null));
                 //Set Feedback Text
                 questionFeedback.setText("Correct Answer");
@@ -301,11 +304,11 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
                 //Wrong Answer
                 Log.d(TAG, "Wrong Answer");
                 //Wrong Answer
-                wrongAnswers++;
+                wrongAnswers += 1;
                 selectedAnswerBtn.setBackground(getResources().getDrawable(R.drawable.wrong_answer_btn_bg, null));
 
                 //Set Feedback Text
-                questionFeedback.setText("Wrong Answer \n \n Correct Answer : " + questions.get(currentQuestion - 1).getAnswer());
+                questionFeedback.setText("Wrong Answer \n Correct Answer : " + questions.get(currentQuestion - 1).getAnswer());
                 questionFeedback.setTextColor(getResources().getColor(R.color.colorAccent, null));
             }
             //Set Can answer to false
@@ -320,7 +323,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showNextBtn() {
-        if (currentQuestion == 10) {
+        if (currentQuestion == questions.size()) {
             nextBtn.setText("Submit Results");
         }
         questionFeedback.setVisibility(View.VISIBLE);

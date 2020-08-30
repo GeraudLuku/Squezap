@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         detailsDesc = view.findViewById(R.id.details_desc);
 
 
+        //set spinner items
         //get and set category difficulty default difficulty is Easy
         detailsDiff = view.findViewById(R.id.details_difficulty_text);
         detailsDiff.setItems("Easy", "Medium", "Hard");
@@ -71,6 +73,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 //set difficulty to Category class
                 category.setLevel(item.toLowerCase());
+                Log.d("Details Fragment", category.getLevel());
             }
         });
 
@@ -81,6 +84,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
                 //set number of questions to category class
                 category.setQuestions(newValue);
+                Log.d("Details Fragment", String.format("%d",category.getQuestions()));
             }
         });
 
@@ -104,13 +108,10 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     //send final quiz model data to quiz fragment
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.details_start_btn:
-//                DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment action = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(category);
-//                navController.navigate(action);
-                DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment detailsFragmentToQuizFragment = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(category);
-                navController.navigate(detailsFragmentToQuizFragment);
-                break;
+        if (v.getId() == R.id.details_start_btn) {
+            Log.d("Object",category.toString());
+            DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment detailsFragmentToQuizFragment = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(category);
+            navController.navigate(detailsFragmentToQuizFragment);
         }
     }
 }

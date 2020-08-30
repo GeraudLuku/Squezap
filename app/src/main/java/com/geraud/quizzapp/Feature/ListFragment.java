@@ -13,6 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,14 +60,10 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
 
         navController = Navigation.findNavController(view);
 
-        //instantiate recyclerview and set adapter
         recyclerView = view.findViewById(R.id.list_view);
-        adapter = new QuizListAdapter(this, categorys);
         listProgress = view.findViewById(R.id.list_progress);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
+
 
         //animations
         fadeInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
@@ -85,6 +82,15 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
             public void onChanged(List<Category> categories) {
                 //set quiz list category items
                 categorys = categories;
+                Log.d("Start Fragment",categories.get(0).getImage());
+
+                //instantiate recyclerview and set adapter
+
+                adapter = new QuizListAdapter(ListFragment.this, categorys);
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(adapter);
 
                 //show RecyclerView when data is available
                 recyclerView.startAnimation(fadeInAnim);
@@ -100,6 +106,7 @@ public class ListFragment extends Fragment implements QuizListAdapter.OnQuizList
 
     @Override
     public void onItemClicked(Category category) {
+        Log.d("Item Clicked",category.getName());
         ListFragmentDirections.ActionListFragmentToDetailsFragment listFragmentToDetailsFragment = ListFragmentDirections.actionListFragmentToDetailsFragment(category);
         navController.navigate(listFragmentToDetailsFragment);
     }

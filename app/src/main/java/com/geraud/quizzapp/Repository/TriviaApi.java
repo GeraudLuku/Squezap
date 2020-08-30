@@ -11,7 +11,7 @@ public interface TriviaApi {
 
 
     // /api.php?amount=10&category=10&difficulty=easy&type=multiple
-    @GET("api.php")
+    @GET("api.php?")
     Single<TriviaResponseObject> getQuestions(
             @Query("amount") int length,
             @Query("category") int category,

@@ -50,11 +50,11 @@ public class QuizListAdapter extends RecyclerView.Adapter<QuizListAdapter.QuizVi
 
         String listDescription = categories.get(position).getDesc();
         if (listDescription.length() > 150) {
-            listDescription = listDescription.substring(0, 150);
+            listDescription = listDescription.substring(0, 100);
         }
 
         //set category description
-        holder.Desc.setText(listDescription + "...");
+        holder.Desc.setText(String.format("%s....",listDescription));
     }
 
     @Override

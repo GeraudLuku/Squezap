@@ -41,6 +41,7 @@
         android:fontFamily="@font/work_sans"
         android:text="Quiz Description"
         android:textColor="@android:color/white"
+        android:maxLines="6"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,14 +90,14 @@
 
     <com.jaredrummler.materialspinner.MaterialSpinner
         android:id="@+id/details_difficulty_text"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/details_difficulty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/details_difficulty"
         app:ms_background_color="@color/colorPrimary"
-        app:ms_text_color="@color/white" />
+        app:ms_text_color="@color/colorDark" />
 
 
     <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton

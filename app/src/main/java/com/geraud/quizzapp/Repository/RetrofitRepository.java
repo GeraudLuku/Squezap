@@ -33,18 +33,21 @@ public class RetrofitRepository {
 
     public MutableLiveData<ArrayList<Question>> getQuestions(int length, int category, String level, String type) {
         final MutableLiveData<ArrayList<Question>> questions = new MutableLiveData<>();
-        triviaApi.getQuestions(length, category, level, type)
+        triviaApi.getQuestions(length,category,level,type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<TriviaResponseObject, ArrayList<Question>>() {
+                .subscribeWith(new DisposableSingleObserver<TriviaResponseObject>() {
                     @Override
-                    public ArrayList<Question> apply(TriviaResponseObject triviaResponseObject) throws Exception {
+                    public void onSuccess(TriviaResponseObject triviaResponseObject) {
+                        Log.d("Repository",triviaResponseObject.getResults().get(0).getQuestion());
+
+                        //manipulate the data
 
                         //List of formatted questions
                         ArrayList<Question> finalQuestions = new ArrayList<>();
 
-                        //Get each individual questions object
-                        for (TriviaQuestionObject triviaQuestionObject : triviaResponseObject.getResults()) {
+                        for (TriviaQuestionObject questionObject : triviaResponseObject.getResults()) {
+
                             //Transform the questions
                             Question question = new Question();
 
@@ -52,47 +55,37 @@ public class RetrofitRepository {
                             int answerIndex = new Random().nextInt(4);
 
                             //set question
-                            question.setQuestion(triviaQuestionObject.getQuestion());
-
+                            question.setQuestion(questionObject.getQuestion());
                             //set answer
-                            question.setAnswer(triviaQuestionObject.getCorrect_answer());
+                            question.setAnswer(questionObject.getCorrect_answer());
+                            //set title category of question
+                            question.setTitle(questionObject.getCategory());
 
                             //answer choices
-                            ArrayList<String> answerChoices = triviaQuestionObject.getIncorrect_answers();
-                            answerChoices.add(answerIndex, triviaQuestionObject.getCorrect_answer());
+                            ArrayList<String> answerChoices = questionObject.getIncorrect_answers();
+                            answerChoices.add(answerIndex, questionObject.getCorrect_answer());
                             //set answer options
                             question.setOption_a(answerChoices.get(0));
                             question.setOption_b(answerChoices.get(1));
                             question.setOption_c(answerChoices.get(2));
                             question.setOption_d(answerChoices.get(3));
 
-                            //set title category of question
-                            question.setTitle(triviaQuestionObject.getCategory());
-
                             //add question to list of questions
+                            Log.d("Question",question.getTitle());
                             finalQuestions.add(question);
+
 
                         }
 
-                        return finalQuestions;
-
-                    }
-                })
-                .subscribeWith(new DisposableSingleObserver<ArrayList<Question>>() {
-                    @Override
-                    public void onSuccess(ArrayList<Question> questionArrayList) {
-                        //received all questions
-                        Log.d(getClass().getSimpleName(), "Success : Received questions");
-                        //return question object
-                        questions.setValue(questionArrayList);
+                        questions.postValue(finalQuestions);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        //Network Error
-                        Log.d(getClass().getSimpleName(), "Network Error : " + e.getMessage());
+
                     }
                 });
+
         return questions;
     }
 }

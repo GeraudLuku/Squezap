@@ -86,6 +86,8 @@ public class StartFragment extends Fragment {
                 }
             });
         } else {
+            //print UID
+            Log.d("Start",currentUser.getUid());
             //Navigate to Homepage
             startFeedbackText.setText("Logged in...");
             navController.navigate(R.id.action_startFragment_to_listFragment);

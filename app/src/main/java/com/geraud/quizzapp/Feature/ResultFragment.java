@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +20,16 @@ import android.widget.Toast;
 
 import com.geraud.quizzapp.Model.Result;
 import com.geraud.quizzapp.R;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 
-public class ResultFragment extends Fragment implements RewardedVideoAdListener {
+public class ResultFragment extends Fragment{
 
-    private static final String ADMOB_APP_ID = "ca-app-pub-4709428567137080~4107467797";
-
-    private RewardedVideoAd mRewardedVideoAd;
+    //private static final String ADMOB_APP_ID = "ca-app-pub-4709428567137080~4107467797";
+    private static final String ADMOB_APP_ID = "ca-app-pub-9390048287444061/3221111032";
 
     private NavController navController;
 
@@ -39,7 +38,7 @@ public class ResultFragment extends Fragment implements RewardedVideoAdListener 
     private TextView resultMissed;
 
     private TextView resultPercent;
-    private ProgressBar resultProgress;
+    private ProgressBar resultProgress, savingProgress;
 
     private Result mResult;
 
@@ -53,21 +52,8 @@ public class ResultFragment extends Fragment implements RewardedVideoAdListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for getContext() fragment
-        View view = inflater.inflate(R.layout.fragment_result, container, false);
 
-//        //show Admob
-//        // Use an activity context to get the rewarded video instance.
-//        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getActivity());
-//        mRewardedVideoAd.setRewardedVideoAdListener(this);
-//        mRewardedVideoAd.loadAd(ADMOB_APP_ID, new AdRequest.Builder().build());
-//
-//        //Display a rewarded video ad
-//        if (mRewardedVideoAd.isLoaded()) {
-//            mRewardedVideoAd.show();
-//        }
-
-        return view;
+        return inflater.inflate(R.layout.fragment_result, container, false);
     }
 
     @Override
@@ -87,17 +73,59 @@ public class ResultFragment extends Fragment implements RewardedVideoAdListener 
         resultHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_resultFragment_to_listFragment);
+
+                //hide button and show progress bar
+                resultHomeBtn.setVisibility(View.INVISIBLE);
+                savingProgress.setVisibility(View.VISIBLE);
+
+                //start saving the data to firebase
+                //get current user uid
+                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                //get scrore in percentage
+                //Calculate Progress
+                long total = (long) mResult.getCorrect() + mResult.getWrong() + mResult.getUnAnswered();
+                long percent = (mResult.getCorrect() * 100) / total;
+
+                //create database reference
+                FirebaseDatabase.getInstance().getReference().child("QuizScores")
+                        .child(userID)
+                        .child(mResult.getTitle())
+                        .setValue(percent)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                //show success toast
+                                Toast.makeText(getContext(),"Updated score successfully",Toast.LENGTH_SHORT).show();
+                                //if it passed redirect user to home page
+                                navController.navigate(R.id.action_resultFragment_to_listFragment);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //if it failed
+                        //hide preogress bar and show button
+                        resultHomeBtn.setVisibility(View.VISIBLE);
+                        savingProgress.setVisibility(View.INVISIBLE);
+
+                        //tell user that it failed
+                        Toast.makeText(getContext(),"Failed to upload score",Toast.LENGTH_SHORT).show();
+                        Log.d("Failed Upload",e.getLocalizedMessage());
+                    }
+                });
             }
         });
 
         resultPercent = view.findViewById(R.id.results_percent);
         resultProgress = view.findViewById(R.id.results_progress);
+        savingProgress = view.findViewById(R.id.progressBar);
 
         //show results
         resultCorrect.setText(mResult.getCorrect()+ "");
         resultWrong.setText(mResult.getWrong()+ "");
         resultMissed.setText(mResult.getUnAnswered()+ "");
+
+        Log.d("Result",mResult.getTitle());  //Entertainment: Books   [String : Int]
 
         //Calculate Progress
         long total = (long) mResult.getCorrect() + mResult.getWrong() + mResult.getUnAnswered();
@@ -106,69 +134,6 @@ public class ResultFragment extends Fragment implements RewardedVideoAdListener 
         resultPercent.setText(percent + "%");
         resultProgress.setProgress((int) percent);
 
-    }
-
-//    @Override
-//    public void onResume() {
-//        mRewardedVideoAd.resume(getActivity());
-//        super.onResume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        mRewardedVideoAd.pause(getActivity());
-//        super.onPause();
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        mRewardedVideoAd.destroy(getActivity());
-//        super.onDestroy();
-//    }
-
-
-
-    @Override
-    public void onRewarded(RewardItem reward) {
-        Toast.makeText(getContext(), "onRewarded! currency: " + reward.getType() + "  amount: " +
-                reward.getAmount(), Toast.LENGTH_SHORT).show();
-        // Reward the user.
-    }
-
-    @Override
-    public void onRewardedVideoAdLeftApplication() {
-        Toast.makeText(getContext(), "onRewardedVideoAdLeftApplication",
-                Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-        Toast.makeText(getContext(), "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int errorCode) {
-        Toast.makeText(getContext(), "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdLoaded() {
-        Toast.makeText(getContext(), "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdOpened() {
-        Toast.makeText(getContext(), "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoStarted() {
-        Toast.makeText(getContext(), "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoCompleted() {
-        Toast.makeText(getContext(), "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
     }
 
 }

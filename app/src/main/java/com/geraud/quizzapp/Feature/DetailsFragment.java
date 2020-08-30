@@ -102,6 +102,8 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         //start quiz button
         detailsStartBtn = view.findViewById(R.id.details_start_btn);
         detailsStartBtn.setOnClickListener(this);
+
+        //get and set last score
     }
 
 
@@ -109,7 +111,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.details_start_btn) {
-            Log.d("Object",category.toString());
+            Log.d("Object", category.toString());
             DetailsFragmentDirections.ActionDetailsFragmentToQuizFragment detailsFragmentToQuizFragment = DetailsFragmentDirections.actionDetailsFragmentToQuizFragment(category);
             navController.navigate(detailsFragmentToQuizFragment);
         }

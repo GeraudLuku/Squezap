@@ -244,7 +244,7 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
 
                 new AlertDialog.Builder(getActivity())
                         .setMessage("Are you sure you want to leave this quiz?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // Continue with leaving operation
                                 //total questions - (correct answered + wrong answered)

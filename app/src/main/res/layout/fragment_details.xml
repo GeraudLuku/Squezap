@@ -43,6 +43,7 @@
         android:textColor="@android:color/white"
         android:maxLines="6"
         android:textSize="16sp"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/details_title"
@@ -124,7 +125,7 @@
         android:fontFamily="@font/work_sans"
         android:text="N/A"
         android:textColor="@color/colorLightText"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/details_questions_text" />
 

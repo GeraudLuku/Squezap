@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,6 +105,8 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         //set title and description of category
         detailsTitle.setText(category.getName());
         detailsDesc.setText(category.getDesc());
+
+        detailsDesc.setMovementMethod(new ScrollingMovementMethod());
 
         //start quiz button
         detailsStartBtn = view.findViewById(R.id.details_start_btn);

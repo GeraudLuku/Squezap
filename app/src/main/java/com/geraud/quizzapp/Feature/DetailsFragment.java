@@ -21,6 +21,11 @@ import com.bumptech.glide.Glide;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.geraud.quizzapp.Model.Category;
 import com.geraud.quizzapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 
@@ -31,7 +36,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
     private ImageView detailsImage;
     private TextView detailsTitle;
-    private TextView detailsDesc;
+    private TextView detailsDesc, detailsScore;
     private MaterialSpinner detailsDiff;
     private ElegantNumberButton detailsQuestions;
 
@@ -60,6 +65,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         //Initialize UI Elements
         detailsImage = view.findViewById(R.id.details_image);
         detailsTitle = view.findViewById(R.id.details_title);
+        detailsScore = view.findViewById(R.id.details_score_text);
         detailsDesc = view.findViewById(R.id.details_desc);
 
 
@@ -103,7 +109,30 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         detailsStartBtn = view.findViewById(R.id.details_start_btn);
         detailsStartBtn.setOnClickListener(this);
 
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         //get and set last score
+        FirebaseDatabase.getInstance().getReference().child("QuizScores")
+                .child(userID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()){
+                            Log.d("Data",data.getKey());
+                            //check if category exist
+                            if (data.getKey().toLowerCase().contains(category.getName().toLowerCase())) {
+                                //set score and return
+                                detailsScore.setText(data.getValue() + "%");
+                                return;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
 

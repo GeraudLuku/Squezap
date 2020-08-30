@@ -8,8 +8,8 @@ Squezap is a minimalist quiz application where users can chose across 18 categor
 – Henry Ford
 
 # Screenshoots
-<img src="/screenshots/main_empty_light.png" height="400px"/> <img src="/screenshots/main_empty_dark.png" height="400px"/>
-<img src="/screenshots/main_full_light.png" height="400px"/><img src="/screenshots/main_full_dark.png" height="400px"/>
+<img src="Screenshot_1598827348.png" height="400px"/> <img src="Screenshot_1598827406.png" height="400px"/>
+<img src="Screenshot_1598827429.png" height="400px"/><img src="Screenshot_1598827450.png" height="400px"/>
 
 # Download
 <a href="https://play.google.com/store/apps/details?id=com.avjindersinghsekhon.minimaltodo&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-AC-global-none-all-co-pr-py-PartBadges-Oct1515-1">

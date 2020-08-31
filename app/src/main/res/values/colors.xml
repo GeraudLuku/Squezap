@@ -7,4 +7,5 @@
     <color name="colorDark">#111111</color>
     <color name="colorLightText">#929292</color>
     <color name="white">#FFFFFF</color>
+    <color name="green_answer">#00FF00</color>
 </resources>

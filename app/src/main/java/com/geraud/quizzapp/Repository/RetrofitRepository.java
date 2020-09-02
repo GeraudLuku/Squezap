@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 public class RetrofitRepository {
@@ -35,6 +36,7 @@ public class RetrofitRepository {
         final MutableLiveData<ArrayList<Question>> questions = new MutableLiveData<>();
         triviaApi.getQuestions(length,category,level,type)
                 .subscribeOn(Schedulers.io())
+                .doOnError(error -> Log.d("The error message is: " , error.getMessage()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<TriviaResponseObject>() {
                     @Override
@@ -55,6 +57,7 @@ public class RetrofitRepository {
                             int answerIndex = new Random().nextInt(4);
 
                             //set question
+                            //decode question
                             question.setQuestion(questionObject.getQuestion());
                             //set answer
                             question.setAnswer(questionObject.getCorrect_answer());

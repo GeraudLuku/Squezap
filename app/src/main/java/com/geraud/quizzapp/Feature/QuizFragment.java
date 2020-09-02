@@ -256,8 +256,10 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
                             public void onClick(DialogInterface dialog, int which) {
                                 // Continue with leaving operation
                                 //total questions - (correct answered + wrong answered)
-                                Result result = new Result(questions.get(0).getTitle(), correctAnswers, wrongAnswers,
-                                        (category.getQuestions() - (correctAnswers + wrongAnswers)));
+                                Result result = new Result(questions.get(0).getTitle()
+                                        ,(peek > 0)? observation : "Fair Player"
+                                        , correctAnswers, wrongAnswers
+                                        , (category.getQuestions() - (correctAnswers + wrongAnswers)));
 
                                 //navigate to result screen
                                 QuizFragmentDirections.ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(result);
@@ -274,7 +276,11 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
 
     private void submitResults() {
         //result object
-        Result result = new Result(questions.get(0).getTitle(), correctAnswers, wrongAnswers, notAnswered);
+        Result result = new Result(questions.get(0).getTitle()
+                ,(peek > 0)? observation : "Fair Player"
+                ,correctAnswers
+                ,wrongAnswers
+                ,notAnswered);
 
         //navigate to result screen
         QuizFragmentDirections.ActionQuizFragmentToResultFragment action = QuizFragmentDirections.actionQuizFragmentToResultFragment(result);
@@ -356,13 +362,18 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         countDownTimer.cancel();
     }
 
+    private String observation;
+    private int peek = 0;
+
     @Override
     public void onResume() {
         super.onResume();
         Log.d("Frag","resumed");
+        peek++;
         //resume countdown timer and notify the user that they cheated
         //when you want to resume create a new countdowntimer with left milliseconds..
         startTimer(timeLeft);
         Log.d("Cheat","user cheated");
+        observation = "You had a peek " + peek + " times";
     }
 }

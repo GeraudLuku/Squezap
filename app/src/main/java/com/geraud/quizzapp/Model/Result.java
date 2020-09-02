@@ -3,14 +3,15 @@ package com.geraud.quizzapp.Model;
 import java.io.Serializable;
 
 public class Result implements Serializable {
-    private String title;
+    private String title, observation;
     private int correct, wrong, unAnswered;
 
     public Result() {
     }
 
-    public Result(String title, int correct, int wrong, int unAnswered) {
+    public Result(String title, String observation, int correct, int wrong, int unAnswered) {
         this.title = title;
+        this.observation = observation;
         this.correct = correct;
         this.wrong = wrong;
         this.unAnswered = unAnswered;
@@ -22,6 +23,14 @@ public class Result implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getObservation() {
+        return observation;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
     }
 
     public int getCorrect() {

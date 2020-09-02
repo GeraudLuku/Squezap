@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="@font/crimson_text"
         android:text="Results"
@@ -29,10 +29,10 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/results_title" />
+        app:layout_constraintTop_toBottomOf="@+id/observerTxtView" />
 
     <TextView
         android:id="@+id/results_percent"
@@ -150,4 +150,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/observerTxtView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Fair Player"
+        android:textColor="#FFC107"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/results_title"
+        app:layout_constraintStart_toStartOf="@+id/results_title"
+        app:layout_constraintTop_toBottomOf="@+id/results_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>

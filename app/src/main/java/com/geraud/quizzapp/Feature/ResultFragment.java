@@ -64,6 +64,9 @@ public class ResultFragment extends Fragment{
         navController = Navigation.findNavController(view);
         mResult = ResultFragmentArgs.fromBundle(getArguments()).getResult();
 
+        TextView observerTxtView = view.findViewById(R.id.observerTxtView);
+        observerTxtView.setText(mResult.getObservation());
+
         //Initialize UI Elements
         resultCorrect = view.findViewById(R.id.results_correct_text);
         resultWrong = view.findViewById(R.id.results_wrong_text);

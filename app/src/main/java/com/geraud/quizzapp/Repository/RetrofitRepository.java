@@ -1,11 +1,15 @@
 package com.geraud.quizzapp.Repository;
 
+import android.text.Html;
 import android.util.Log;
 
 import com.geraud.quizzapp.Model.Question;
 import com.geraud.quizzapp.Model.TriviaQuestionObject;
 import com.geraud.quizzapp.Model.TriviaResponseObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -57,8 +61,10 @@ public class RetrofitRepository {
                             int answerIndex = new Random().nextInt(4);
 
                             //set question
-                            //decode question
-                            question.setQuestion(questionObject.getQuestion());
+                            //decode question object from HTML encoding to normal string
+                            String decodedQuestionString = Html.fromHtml((String) questionObject.getQuestion()).toString();
+                            question.setQuestion(decodedQuestionString);
+
                             //set answer
                             question.setAnswer(questionObject.getCorrect_answer());
                             //set title category of question

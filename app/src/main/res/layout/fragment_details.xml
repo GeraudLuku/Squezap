@@ -110,6 +110,7 @@
         android:fontFamily="@font/work_sans"
         app:backGroundColor="@color/colorPrimary"
         app:initialNumber="10"
+        app:finalNumber="50"
         app:layout_constraintBottom_toBottomOf="@+id/details_questions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/details_difficulty_text"

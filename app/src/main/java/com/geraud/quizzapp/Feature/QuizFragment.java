@@ -160,14 +160,16 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         currentQuestion = questNum;
 
         //Start Question Timer
-        startTimer();
+        long timeToAnswer = 31;
+        startTimer(timeToAnswer);
     }
 
-    private void startTimer() {
+   private long timeLeft;
+    private void startTimer(long timeToAnswer) {
 
         //Set Timer Text
         //long timeToAnswer = questions.get(currentQuestion - 1).getTimer(); //10 seconds
-        long timeToAnswer = 31;
+
         questionTime.setText(timeToAnswer + "");
 
         //Show Timer ProgressBar
@@ -178,7 +180,8 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onTick(long millisUntilFinished) {
                 //Update Time
-                questionTime.setText(String.format("%d", millisUntilFinished / 1000));
+                timeLeft = millisUntilFinished/1000;
+                questionTime.setText(String.format("%d", timeLeft));
 
                 //Progress in percent
                 long percent = millisUntilFinished / (timeToAnswer * 10);
@@ -336,4 +339,30 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         nextBtn.setEnabled(true);
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("Frag","paused");
+        //pause the countdown timer
+        countDownTimer.cancel();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("Frag","destroyed");
+        //cancel count down timer
+        countDownTimer.cancel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Frag","resumed");
+        //resume countdown timer and notify the user that they cheated
+        //when you want to resume create a new countdowntimer with left milliseconds..
+        startTimer(timeLeft);
+        Log.d("Cheat","user cheated");
+    }
 }

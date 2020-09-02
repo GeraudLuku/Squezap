@@ -74,10 +74,10 @@ public class RetrofitRepository {
                             ArrayList<String> answerChoices = questionObject.getIncorrect_answers();
                             answerChoices.add(answerIndex, questionObject.getCorrect_answer());
                             //set answer options
-                            question.setOption_a(answerChoices.get(0));
-                            question.setOption_b(answerChoices.get(1));
-                            question.setOption_c(answerChoices.get(2));
-                            question.setOption_d(answerChoices.get(3));
+                            question.setOption_a(Html.fromHtml((String) answerChoices.get(0) ).toString());
+                            question.setOption_b(Html.fromHtml((String) answerChoices.get(1) ).toString());
+                            question.setOption_c(Html.fromHtml((String) answerChoices.get(2) ).toString());
+                            question.setOption_d(Html.fromHtml((String) answerChoices.get(3) ).toString());
 
                             //add question to list of questions
                             Log.d("Question",question.getTitle());

@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 
 
 import android.os.CountDownTimer;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,7 +94,10 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
         optionFourBtn = view.findViewById(R.id.quiz_option_four);
         nextBtn = view.findViewById(R.id.quiz_next_btn);
         questionFeedback = view.findViewById(R.id.quiz_question_feedback);
+
         questionText = view.findViewById(R.id.quiz_question);
+        questionText.setMovementMethod(new ScrollingMovementMethod());
+
         questionTime = view.findViewById(R.id.quiz_question_time);
         questionProgress = view.findViewById(R.id.quiz_question_progress);
         questionNumber = view.findViewById(R.id.quiz_question_number);

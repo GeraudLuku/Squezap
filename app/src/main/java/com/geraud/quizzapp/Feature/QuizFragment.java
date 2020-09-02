@@ -166,8 +166,9 @@ public class QuizFragment extends Fragment implements View.OnClickListener {
     private void startTimer() {
 
         //Set Timer Text
-        long timeToAnswer = questions.get(currentQuestion - 1).getTimer(); //10 seconds
-        questionTime.setText((int) timeToAnswer + "");
+        //long timeToAnswer = questions.get(currentQuestion - 1).getTimer(); //10 seconds
+        long timeToAnswer = 31;
+        questionTime.setText(timeToAnswer + "");
 
         //Show Timer ProgressBar
         questionProgress.setVisibility(View.VISIBLE);

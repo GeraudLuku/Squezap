@@ -2,6 +2,10 @@
 
 <img src="/quiz-app-logo.png" height="200px"/> <br>
 
+# Download
+<a href="">
+<img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" height="50px"/></a>
+
 Squezap is a minimalist quiz application where users can chose across 18 categories and also customise the number of questions and difficulty. A fun application to use when trying to pass time, test your knowledge or just trying to learn something new
 
 #### “Anyone who stops learning is old, whether at twenty or eighty. Anyone who keeps learning stays young.” 
@@ -10,10 +14,6 @@ Squezap is a minimalist quiz application where users can chose across 18 categor
 # Screenshoots
 <img src="Screenshot_1598827348.png" height="400px"/> <img src="Screenshot_1598827406.png" height="400px"/>
 <img src="Screenshot_1598827429.png" height="400px"/><img src="Screenshot_1598827450.png" height="400px"/>
-
-# Download
-<a href="https://play.google.com/store/apps/details?id=com.avjindersinghsekhon.minimaltodo&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-AC-global-none-all-co-pr-py-PartBadges-Oct1515-1">
-<img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" height="50px"/></a>
 
 ## Contributing
 Looking to contribute something to Clink? [Here's how you can help](/Contributing.md).
